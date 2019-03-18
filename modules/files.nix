@@ -210,17 +210,14 @@ in
       '') (filter (v: v.onChange != "") (attrValues cfg))
     );
 
-    home-files = pkgs.stdenv.mkDerivation {
-      name = "home-manager-files";
-
-      nativeBuildInputs = [ pkgs.xlibs.lndir ];
-
-      preferLocalBuild = true;
-      allowSubstitutes = false;
-
-      # Symlink directories and files that have the right execute bit.
-      # Copy files that need their execute bit changed.
-      buildCommand = ''
+    # Symlink directories and files that have the right execute bit.
+    # Copy files that need their execute bit changed.
+    home-files = pkgs.runCommand
+      "home-manager-files"
+      {
+        nativeBuildInputs = [ pkgs.xlibs.lndir ];
+      }
+      (''
         mkdir -p $out
 
         function insertFile() {
@@ -279,7 +276,6 @@ in
                         else builtins.toString v.executable}" \
                      "${builtins.toString v.recursive}"
         '') cfg
-      );
-    };
+      ));
   };
 }

@@ -383,13 +383,10 @@ in
           ${activationCmds}
         '';
       in
-        pkgs.stdenv.mkDerivation {
-          name = "home-manager-generation";
-
-          preferLocalBuild = true;
-          allowSubstitutes = false;
-
-          buildCommand = ''
+        pkgs.runCommand
+          "home-manager-generation"
+          { }
+          ''
             mkdir -p $out
 
             cp ${activationScript} $out/activate
@@ -402,7 +399,6 @@ in
 
             ${cfg.extraBuilderCommands}
           '';
-        };
 
     home.path = pkgs.buildEnv {
       name = "home-manager-path";
